@@ -88,3 +88,26 @@ if i < n_len:
     for v in valleys:
       i,j=v
       q.put((distm(i,j),i,j))
+    
+    while not q.empty():
+      c,i,j=q.get()
+      mov=min(abs(n[i]-m),abs(n[j]-m))
+      if n[i]<n[j]:
+        kma=j
+        kme=i
+      else:
+        kma=i
+        kme=j
+      n[kma]-=mov
+      n[kme]+=mov
+
+      while n[i]==m and i!=j:
+        i-=1
+	if i<0:
+	  i=n_len-i
+      if i==j:
+        continue
+      while n[j]==m and j!=i:
+        j=modm(j+1)
+
+      
