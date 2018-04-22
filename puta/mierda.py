@@ -4,110 +4,27 @@ Created on 13/04/2018
 @author: ernesto
 '''
 
-from queue import PriorityQueue
-
-def dist(sz,a,b):
-    m_sz=sz>>1
-    d=abs(a-b)
-    if d>m_sz:
-        d=sz-d
-    return d
-
 N = int(input())
 n = [int(x) for x in input().strip().split(" ")]
 m = sum(n) // len(n)
 n_len = len(n)
-modm = lambda x:x % n_len
-distm=lambda a,b:dist(n_len,a,b)
-valleys = []
-
-f = 0
-i = 0
-while i < n_len:
-    if n[i] > m:
-        break
-    i += 1
+# print("n_len {}".format(n_len))
+#print("lista antes {}".format(n))
+#print("lista despues {}".format(n))
+n = list(map(lambda x:x - m, n))
+r = 0
+b = [0] * n_len
+for i, x in enumerate(n[:-1]):
+    b[i + 1] = b[i] + n[i]
     
-if i < n_len:
-    f = i
+#print("b {}".format(b))
 
-    i = modm(i + 1)
-    while i != f:
-        print("i {}".format(i))
-        if n[i] < m:
-            break
-        if n[i] > m:
-            f = i
-        i = modm(i + 1)
-        
-    print("f {}".format(f))
-    
-    i = f
-    j = modm(i + 1)
-    exita = False
-    while not exita:
-        exita = False
-        while j != i:
-            if n[j] < m:
-                break
-            if j == f:
-                exita=True
-            j = modm(j + 1)
-        valley = (i, j)
-        valleys.append(valley)
-        i = j
-        j = modm(i + 1)
-        lj = i
-        while j != i:
-            if n[j] > m:
-                break
-            if n[j] < m:
-                lj = j
-            if j == f:
-                exita=True
-            j = modm(j + 1)
-        valley = (lj,j)
-        valleys.append(valley)
-        if j==f:
-            break
-        print("v {}".format(valley))
-        i = j
-        j = modm(i + 1)
-        lj = i
-        while j != i:
-            if n[j] < m:
-                break
-            if n[j] > m:
-                lj = j
-            if j == f:
-                exita=True
-            j = modm(j + 1)
-        i = lj
-    print("valleys {}".format(valleys))
-    q=PriorityQueue()
-    for v in valleys:
-      i,j=v
-      q.put((distm(i,j),i,j))
-    
-    while not q.empty():
-      c,i,j=q.get()
-      mov=min(abs(n[i]-m),abs(n[j]-m))
-      if n[i]<n[j]:
-        kma=j
-        kme=i
-      else:
-        kma=i
-        kme=j
-      n[kma]-=mov
-      n[kme]+=mov
+b.sort()
 
-      while n[i]==m and i!=j:
-        i-=1
-	if i<0:
-	  i=n_len-i
-      if i==j:
-        continue
-      while n[j]==m and j!=i:
-        j=modm(j+1)
+med = -b[n_len >> 1]
 
-      
+#print("b {} med {}".format(b, med))
+for bi in b:
+    r += abs(bi + med)
+
+print(r)
